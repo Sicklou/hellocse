@@ -33,6 +33,6 @@ class LoginController extends Controller
             ->status(401);
         }
 
-        return $user->createToken("default")->plainTextToken;
+        return response()->json(['token' => $user->createToken("default")->plainTextToken], 200);
     }
 }
