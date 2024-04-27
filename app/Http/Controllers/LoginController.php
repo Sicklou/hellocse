@@ -19,6 +19,13 @@ class LoginController extends Controller
         /** @var \App\Models\User $user */
         $user = User::where('email', $request->email)->first();
 
+        if ($user && $user->isNotAdmin()) {
+            throw ValidationException::withMessages([
+                'email' => ['Authentification impossible'],
+            ])
+            ->status(403);
+        }
+
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],

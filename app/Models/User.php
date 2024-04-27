@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return Administrateur::has('user', $this->id)->count() == 0 ? false : true;
     }
+
+    public function isNotAdmin(): bool
+    {
+        return !$this->isAdmin();
+    }
 }

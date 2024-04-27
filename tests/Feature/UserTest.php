@@ -31,6 +31,10 @@ test('user can authenticate', function() {
     $user = User::factory()
         ->create(['password' => Hash::make('password')]);
 
+    Administrateur::factory()
+        ->for($user)
+        ->create();
+
     $response = $this->postJson('/api/sanctum/token',
         [
             'email' => $user->email,
@@ -52,6 +56,10 @@ test('user cant authenticate', function() {
     $user = User::factory()
         ->create(['password' => Hash::make('password')]);
 
+    Administrateur::factory()
+        ->for($user)
+        ->create();
+
     // wrong password
     $response = $this->postJson('/api/sanctum/token',
         [
@@ -71,4 +79,20 @@ test('user cant authenticate', function() {
     );
 
     $response->assertStatus(401);
+});
+
+test('user cant authenticate if not admin', function() {
+
+    $user = User::factory()
+        ->create(['password' => Hash::make('password')]);
+
+    // is not admin
+    $response = $this->postJson('/api/sanctum/token',
+        [
+            'email' => $user->email,
+            'password' => 'password',
+        ]
+    );
+
+    $response->assertStatus(403);
 });
