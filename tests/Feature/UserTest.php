@@ -52,7 +52,7 @@ test('user can authenticate', function() {
     expect($user->id)->toBe($userToken->id);
 });
 
-test('user cant authenticate', function() {
+test('user cant authenticate when bad credentials', function() {
 
     $user = User::factory()
         ->create(['password' => Hash::make('password')]);
@@ -71,7 +71,7 @@ test('user cant authenticate', function() {
 
     $response->assertStatus(401);
 
-    //wrong user
+    //wrong email
     $response = $this->postJson('/api/token/create',
         [
             'email' => 'test@test.com',
