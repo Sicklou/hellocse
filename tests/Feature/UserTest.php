@@ -35,7 +35,7 @@ test('user can authenticate', function() {
         ->for($user)
         ->create();
 
-    $response = $this->postJson('/api/sanctum/token',
+    $response = $this->postJson('/api/token/create',
         [
             'email' => $user->email,
             'password' => 'password',
@@ -43,10 +43,11 @@ test('user can authenticate', function() {
     );
 
     $response->assertOk();
+    expect($response->getContent())->tobeJson();
 
     // Test token valide
-    $token = $response->getContent();
-    $persistedToken = PersonalAccessToken::findToken($token)->first();
+    $data = $response->json();
+    $persistedToken = PersonalAccessToken::findToken($data['token'])->first();
     $userToken = $persistedToken->tokenable;
     expect($user->id)->toBe($userToken->id);
 });
@@ -61,7 +62,7 @@ test('user cant authenticate', function() {
         ->create();
 
     // wrong password
-    $response = $this->postJson('/api/sanctum/token',
+    $response = $this->postJson('/api/token/create',
         [
             'email' => $user->email,
             'password' => 'wrong_password',
@@ -71,7 +72,7 @@ test('user cant authenticate', function() {
     $response->assertStatus(401);
 
     //wrong user
-    $response = $this->postJson('/api/sanctum/token',
+    $response = $this->postJson('/api/token/create',
         [
             'email' => 'test@test.com',
             'password' => 'password',
@@ -87,7 +88,7 @@ test('user cant authenticate if not admin', function() {
         ->create(['password' => Hash::make('password')]);
 
     // is not admin
-    $response = $this->postJson('/api/sanctum/token',
+    $response = $this->postJson('/api/token/create',
         [
             'email' => $user->email,
             'password' => 'password',
