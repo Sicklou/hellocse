@@ -12,7 +12,7 @@ Route::get('/ping', function () {
     return "Hello HelloCSE";
 });
 
-Route::post('/sanctum/token', LoginController::class)
+Route::post('/token/create', LoginController::class)
     ->name('sanctum.createToken');
 
 Route::get('/user', function (Request $request) {
