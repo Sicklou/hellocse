@@ -9,14 +9,14 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): mixed
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        /** @var \App\Models\User $user */
+        /** @var null|\App\Models\User $user */
         $user = User::where('email', $request->email)->first();
 
         if ($user && $user->isNotAdmin()) {

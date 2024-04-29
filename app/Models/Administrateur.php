@@ -12,6 +12,7 @@ class Administrateur extends Model
 {
     use HasFactory;
 
+    /** @return BelongsTo<User, Administrateur> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

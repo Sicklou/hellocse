@@ -30,7 +30,7 @@ class Profil extends Model
         ];
     }
 
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('statut', ProfilStatut::Actif);
     }
