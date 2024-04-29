@@ -18,6 +18,10 @@ class ProfilResource extends JsonResource
     {
         $array = parent::toArray($request);
 
+        if (! auth('sanctum')->check()) {
+            return Arr::except($array, 'statut');
+        }
+
         return $array;
     }
 }
