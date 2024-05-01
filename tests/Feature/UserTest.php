@@ -52,7 +52,7 @@ test('user can authenticate', function() {
     expect($user->id)->toBe($userToken->id);
 });
 
-test('user cant authenticate when bad credentials', function() {
+test('user cant authenticate with bad credentials', function() {
 
     $user = User::factory()
         ->create(['password' => Hash::make('password')]);
