@@ -22,6 +22,4 @@ Route::get('/profils', [ProfilController::class, 'index']);
 // Private endpoints
 //*********
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post('/profils', [ProfilController::class, 'store'])->middleware('auth:sanctum');

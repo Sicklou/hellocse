@@ -18,9 +18,23 @@ class ProfilFactory extends Factory
     {
         return [
             'nom' => $this->faker->name,
-            'prenom' => $this->faker->name,
-            'image' => $this->faker->imageUrl(),
+            'prenom' => $this->faker->firstName,
+            'image' => $this->faker->filePath(),
             'statut' => $this->faker->randomElement(['inactif', 'en attente', 'actif']),
         ];
     }
+
+    /**
+     * Indicate that the user is suspended.
+     */
+    public function withGeneratedImage(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            $filePath = storage_path('app/images/profils');
+            return [
+                'image' => basename($this->faker->image(dir: $filePath, width: 80, height: 80))
+            ];
+        });
+    }
+
 }
