@@ -32,9 +32,10 @@ class ProfilController extends Controller
         // Enregistrement de l'image dans storage/app/images/profils
         $path = $request->image->store('images/profils');
         $validated['image'] = $path;
-        $profil = Profil::create($validated);
 
+        $profil = Profil::create($validated);
         $profilResource = new ProfilResource($profil);
+
         return response()->json([
                 'message' => 'created',
                 'data' => $profilResource
@@ -59,7 +60,15 @@ class ProfilController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        return response()->json($profil);
+        $validated = $request->validated();
+        // Enregistrement de l'image dans storage/app/images/profils
+        $path = $request->image->store('images/profils');
+        $validated['image'] = $path;
+
+        $profil = Profil::create($validated);
+        $profilResource = new ProfilResource($profil);
+
+        return response()->json(['message' => 'updated', 'data' => $profilResource]);
     }
 
     /**

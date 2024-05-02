@@ -28,3 +28,5 @@ Route::get('/profils/{profil}', [ProfilController::class, 'show']);
 Route::post('/profils', [ProfilController::class, 'store'])->middleware('auth:sanctum');
 // Profil : Suppression
 Route::delete('/profils/{profil}', [ProfilController::class, 'destroy'])->middleware('auth:sanctum');
+// Profil : Modification
+Route::put('/profils/{profil}', [ProfilController::class, 'update'])->middleware('auth:sanctum');

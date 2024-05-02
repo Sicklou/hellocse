@@ -82,6 +82,9 @@ test('unauthenticated user cant access private endpoints', function() {
 
     $response = $this->deleteJson('/api/profils/1');
     $response->assertStatus(401);
+
+    $response = $this->putJson('/api/profils/1');
+    $response->assertStatus(401);
 });
 
 test('admin can delete profil', function() {
