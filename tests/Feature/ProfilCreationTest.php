@@ -24,7 +24,7 @@ test('admin can create profil', function () {
     $profil = Profil::factory()->make();
     $file = UploadedFile::fake()->image('test.png');
 
-    $response = $this->post('/api/profils', [
+    $response = $this->postJson('/api/profils', [
         'nom' => $profil->nom,
         'prenom' => $profil->prenom,
         'image' => $file,
@@ -37,5 +37,115 @@ test('admin can create profil', function () {
         'nom' => $profil->nom,
         'prenom' => $profil->prenom,
         'statut' => $profil->statut->value
+    ]);
+});
+
+test('`nom` field is required', function () {
+    Storage::fake('local');
+    $profil = Profil::factory()->make();
+    $file = UploadedFile::fake()->image('test.png');
+
+    $response = $this->postJson('/api/profils', [
+        'nom' => null,
+        'prenom' => $profil->prenom,
+        'image' => $file,
+        'statut' => $profil->statut->value,
+    ]);
+
+    $response->assertStatus(422);
+
+    expect($response->json())->toHaveKeys([
+        'message',
+        'errors.nom'
+    ]);
+});
+
+test('`prenom` field is required', function () {
+    Storage::fake('local');
+    $profil = Profil::factory()->make();
+    $file = UploadedFile::fake()->image('test.png');
+
+    $response = $this->postJson('/api/profils', [
+        'nom' => $profil->nom,
+        'prenom' => null,
+        'image' => $file,
+        'statut' => $profil->statut->value,
+    ]);
+
+    $response->assertStatus(422);
+
+    expect($response->json())->toHaveKeys([
+        'message',
+        'errors.prenom'
+    ]);
+});
+
+test('`image` field is required and type is image', function () {
+    $profil = Profil::factory()->make();
+
+    Storage::fake('local');
+    $file = UploadedFile::fake()->image('test.txt');
+
+    $response = $this->postJson('/api/profils', [
+        'nom' => $profil->nom,
+        'prenom' => $profil->prenom,
+        'image' => $file,
+        'statut' => $profil->statut->value,
+    ]);
+
+    $response->assertStatus(422);
+
+    expect($response->json())->toHaveKeys([
+        'message',
+        'errors.image'
+    ]);
+
+    $response = $this->postJson('/api/profils', [
+        'nom' => $profil->nom,
+        'prenom' => $profil->prenom,
+        'image' => null,
+        'statut' => $profil->statut->value,
+    ]);
+
+    $response->assertStatus(422);
+
+    expect($response->json())->toHaveKeys([
+        'message',
+        'errors.image'
+    ]);
+});
+
+test('`statut` field is required and value is one of ProfilStatut', function () {
+    $profil = Profil::factory()->make();
+
+    Storage::fake('local');
+    $file = UploadedFile::fake()->image('test.png');
+
+    $response = $this->postJson('/api/profils', [
+        'nom' => $profil->nom,
+        'prenom' => $profil->prenom,
+        'image' => $file,
+        'statut' => null,
+    ]);
+
+    $response->assertStatus(422);
+
+    expect($response->json())->toHaveKeys([
+        'message',
+        'errors.statut'
+    ]);
+
+    $response = $this->postJson('/api/profils', [
+        'nom' => $profil->nom,
+        'prenom' => $profil->prenom,
+        'image' => $file,
+        'statut' => "test",
+    ]);
+
+    $response->assertStatus(422);
+
+    expect($response->json())->toHaveKeys([
+        'message',
+        'errors.statut'
     ]);
 });
