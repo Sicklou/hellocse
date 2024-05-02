@@ -22,9 +22,14 @@ class ProfilController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProfilRequest $request)
+    public function store(StoreProfilRequest $request): JsonResponse
     {
+        if (auth()->user()->isNotAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $validated = $request->validated();
+        // Enregistrement de l'image dans storage/app/images/profils
         $path = $request->image->store('images/profils');
         $validated['image'] = $path;
         $profil = Profil::create($validated);
@@ -35,24 +40,34 @@ class ProfilController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Profil $profil)
+    public function show(Profil $profil): JsonResponse
     {
-        //
+        $profil = new ProfilResource($profil);
+        return response()->json($profil);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProfilRequest $request, Profil $profil)
+    public function update(UpdateProfilRequest $request, Profil $profil): JsonResponse
     {
-        //
+        if (auth()->user()->isNotAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        return response()->json([]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Profil $profil)
+    public function destroy(Profil $profil): JsonResponse
     {
-        //
+        if (auth()->user()->isNotAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $profil->delete();
+        return response()->json([]);
     }
 }
