@@ -28,7 +28,7 @@ class ProfilController extends Controller
         $path = $request->image->store('images/profils');
         $validated['image'] = $path;
         $profil = Profil::create($validated);
-        dump($profil->toArray());
+
         return response()->json($profil);
     }
 
