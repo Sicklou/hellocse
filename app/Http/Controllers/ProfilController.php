@@ -34,7 +34,11 @@ class ProfilController extends Controller
         $validated['image'] = $path;
         $profil = Profil::create($validated);
 
-        return response()->json($profil);
+        $profilResource = new ProfilResource($profil);
+        return response()->json([
+                'message' => 'created',
+                'data' => $profilResource
+            ], 201);
     }
 
     /**
@@ -55,7 +59,7 @@ class ProfilController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        return response()->json([]);
+        return response()->json($profil);
     }
 
     /**
@@ -68,6 +72,6 @@ class ProfilController extends Controller
         }
 
         $profil->delete();
-        return response()->json([]);
+        return response()->json(['message' => 'deleted']);
     }
 }

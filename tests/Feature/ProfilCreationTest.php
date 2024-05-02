@@ -31,13 +31,32 @@ test('admin can create profil', function () {
         'statut' => $profil->statut->value,
     ]);
 
-    $response->assertStatus(200);
+    $profilAsArray = $profil->toArray();
+    $profilAsArray['image'] = $file->hashName("images/profils/");
+
+    // Retourne bien le profil
+    $response
+        ->assertStatus(201)
+        ->assertJson([
+            'message' => 'created',
+            'data' => $profilAsArray,
+        ]);
+
+    // Fichier bien stocké
     Storage::disk('local')->assertExists($response->json('image'));
+    // Enregistrement dans la base
     $this->assertDatabaseHas('profils', [
         'nom' => $profil->nom,
         'prenom' => $profil->prenom,
-        'statut' => $profil->statut->value
+        'statut' => $profil->statut->value,
+        'image' => $profilAsArray['image']
     ]);
+
+    // Retour du json correct
+    expect($response->getContent())
+        ->json()
+        ->message
+        ->toBe('created');
 });
 
 test('`nom` field is required', function () {

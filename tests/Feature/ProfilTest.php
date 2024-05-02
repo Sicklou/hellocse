@@ -104,4 +104,8 @@ test('admin can delete profil', function() {
 
     $this->assertModelMissing($profil);
     $this->assertDatabaseCount('profils', 0);
+    expect($response->getContent())
+        ->json()
+        ->message
+        ->toBe('deleted');
 });
